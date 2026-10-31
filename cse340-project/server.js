@@ -12,6 +12,11 @@ app.set("view engine", "ejs");
 // Serve static files from the public folder
 app.use(express.static("public"));
 
+// Function to format page titles
+const formatPageTitle = (title) => {
+  return `${title} | Community Connect`;
+};
+
 // Home page
 app.get("/", (req, res) => {
   res.render("index", { title: "Home" });
