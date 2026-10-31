@@ -3,7 +3,7 @@
 ------------------------------ */
 
 :root {
-    --navy: #142d3e;
+    --navy: #68a3ca;
     --teal: #267c78;
     --teal-dark: #1c625f;
     --cream: #f8f7f2;
@@ -343,4 +343,12 @@ a:focus-visible {
     object-fit: contain;
     border-radius: 7px;
     margin-bottom: 20px;
+}
+
+.home-logo {
+    display: block;
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 30px;
 }
