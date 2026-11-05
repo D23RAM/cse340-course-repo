@@ -22,53 +22,30 @@
 
         <div class="card-grid">
 
-            <article class="info-card">
-                <img
-                    src="/images/brightfuture-logo.png"
-                    alt="BrightFuture Builders logo"
-                    class="organization-image"
-                >
-                <h3>BrightFuture Builders</h3>
-                <p>
-                    Get involved with BrightFuture Builders and support
-                    its community service initiatives.
-                </p>
-                <a href="mailto:info@brightfuture.org" class="text-link">
-                    info@brightfuture.org
-                </a>
-            </article>
+            <% organizations.forEach(organization => { %>
 
-            <article class="info-card">
-                <img
-                    src="/images/greenharvest-logo.png"
-                    alt="GreenHarvest Growers logo"
-                    class="organization-image"
-                >
-                <h3>GreenHarvest Growers</h3>
-                <p>
-                    Connect with GreenHarvest Growers and learn more
-                    about its service opportunities.
-                </p>
-                <a href="mailto:contact@greenharvest.org" class="text-link">
-                    contact@greenharvest.org
-                </a>
-            </article>
+                <article class="info-card">
+                    <img
+                        src="/images/<%= organization.logo_filename %>"
+                        alt="<%= organization.name %> logo"
+                        class="organization-image"
+                    >
 
-            <article class="info-card">
-                <img
-                    src="/images/unityserve-logo.png"
-                    alt="UnityServe Volunteers logo"
-                    class="organization-image"
-                >
-                <h3>UnityServe Volunteers</h3>
-                <p>
-                    Discover opportunities to contribute your time
-                    and make a difference with UnityServe Volunteers.
-                </p>
-                <a href="mailto:hello@unityserve.org" class="text-link">
-                    hello@unityserve.org
-                </a>
-            </article>
+                    <h3><%= organization.name %></h3>
+
+                    <p>
+                        <%= organization.description %>
+                    </p>
+
+                    <a
+                        href="mailto:<%= organization.contact_email %>"
+                        class="text-link"
+                    >
+                        <%= organization.contact_email %>
+                    </a>
+                </article>
+
+            <% }); %>
 
         </div>
     </div>

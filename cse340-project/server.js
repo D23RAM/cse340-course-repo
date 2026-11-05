@@ -1,10 +1,13 @@
+
 import express from "express";
 import dotenv from "dotenv";
-
+import { testConnection } from "./src/models/db.js";
+import { getAllOrganizations } from "./src/models/organizations.js";
+import { getAllProjects } from "./src/models/projects.js";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
@@ -23,21 +26,48 @@ app.get("/", (req, res) => {
 });
 
 // Organizations page
-app.get("/organizations", (req, res) => {
-  res.render("organizations", { title: "Organizations" });
+app.get("/organizations", async (req, res) => {
+  try {
+    const organizations = await getAllOrganizations();
+
+    console.log(organizations);
+
+    const title = "Our Partner Organizations";
+    res.render("organizations", { title, organizations });
+  } catch (error) {
+    console.error("Error retrieving organizations:", error);
+    res.status(500).send("Error retrieving organizations.");
+  }
 });
 
 // Service projects page
-app.get("/projects", (req, res) => {
-  res.render("projects", { title: "Service Projects" });
-});
+app.get("/projects", async (req, res) => {
+    try {
+        const projects = await getAllProjects();
 
+        console.log(projects.rows);
+
+        res.render("projects", {
+            title: "Service Projects",
+            projects: projects.rows
+        });
+    } catch (error) {
+        console.error("Error retrieving projects:", error);
+        res.status(500).send("Error retrieving projects.");
+    }
+});
 // Categories page
 app.get("/categories", (req, res) => {
   res.render("categories", { title: "Categories" });
 });
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(PORT, async () => {
+  try {
+    await testConnection();
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+  }
 });
