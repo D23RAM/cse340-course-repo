@@ -5,6 +5,7 @@ import { testConnection } from "./src/models/db.js";
 import { getAllOrganizations } from "./src/models/organizations.js";
 import { getAllProjects } from "./src/models/projects.js";
 dotenv.config();
+import { getAllCategories } from "./src/models/categories.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -57,8 +58,20 @@ app.get("/projects", async (req, res) => {
     }
 });
 // Categories page
-app.get("/categories", (req, res) => {
-  res.render("categories", { title: "Categories" });
+app.get("/categories", async (req, res) => {
+    try {
+        const categories = await getAllCategories();
+
+        console.log(categories);
+
+        res.render("categories", {
+            title: "Categories",
+            categories
+        });
+    } catch (error) {
+        console.error("Error retrieving categories:", error);
+        res.status(500).send("Error retrieving categories.");
+    }
 });
 
 // Start the server

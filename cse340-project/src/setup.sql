@@ -1,3 +1,4 @@
+
 -- Create organization table
 CREATE TABLE organization (
     organization_id SERIAL PRIMARY KEY,
@@ -26,7 +27,9 @@ VALUES
  'hello@unityserve.org',
  'unityserve-logo.png');
 
- CREATE TABLE service_project (
+
+-- Create service project table
+CREATE TABLE service_project (
     project_id SERIAL PRIMARY KEY,
     organization_id INTEGER NOT NULL REFERENCES organization(organization_id),
     title VARCHAR(150) NOT NULL,
@@ -35,6 +38,7 @@ VALUES
     date DATE NOT NULL
 );
 
+-- Insert sample service projects
 INSERT INTO service_project
 (organization_id, title, description, location, date)
 VALUES
@@ -53,3 +57,52 @@ VALUES
 (3, 'Neighborhood Cleanup', 'Organizing volunteers to clean public areas.', 'Wanica', '2026-11-27'),
 (3, 'Clothing Donation Campaign', 'Collecting clothes for families in need.', 'Paramaribo', '2026-12-03'),
 (3, 'Community Volunteer Day', 'Bringing volunteers together for local service activities.', 'Commewijne', '2026-12-07');
+
+
+-- Create category table
+CREATE TABLE category (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Insert service project categories
+INSERT INTO category (name)
+VALUES
+('Environment'),
+('Education'),
+('Community Development'),
+('Social Support');
+
+
+-- Create junction table for projects and categories
+CREATE TABLE project_category (
+    project_id INTEGER NOT NULL REFERENCES service_project(project_id) ON DELETE CASCADE,
+    category_id INTEGER NOT NULL REFERENCES category(category_id) ON DELETE CASCADE,
+    PRIMARY KEY (project_id, category_id)
+);
+
+
+-- Associate service projects with categories
+INSERT INTO project_category (project_id, category_id)
+VALUES
+(1, 3),
+(2, 2),
+(3, 3),
+(4, 3),
+(5, 3),
+(6, 1),
+(6, 3),
+(7, 1),
+(8, 1),
+(8, 2),
+(9, 1),
+(9, 2),
+(10, 1),
+(10, 2),
+(11, 4),
+(12, 4),
+(13, 1),
+(13, 3),
+(14, 4),
+(15, 3),
+(15, 4);

@@ -1,3 +1,4 @@
+
 <%- include("partials/header", { title: title }) %>
 
 <section class="page-hero">
@@ -12,29 +13,14 @@
     <div class="container">
         <div class="card-grid">
 
-            <article class="info-card">
-                <div class="card-icon">01</div>
-                <h3>Environmental</h3>
-                <p>Protect nature, improve public spaces, and support environmental sustainability.</p>
-            </article>
-
-            <article class="info-card">
-                <div class="card-icon">02</div>
-                <h3>Educational</h3>
-                <p>Support learning through tutoring, mentoring, and educational initiatives.</p>
-            </article>
-
-            <article class="info-card">
-                <div class="card-icon">03</div>
-                <h3>Community Service</h3>
-                <p>Strengthen communities through volunteering and social initiatives.</p>
-            </article>
-
-            <article class="info-card">
-                <div class="card-icon">04</div>
-                <h3>Health and Wellness</h3>
-                <p>Promote healthier communities through wellness and health awareness activities.</p>
-            </article>
+            <% categories.forEach((category, index) => { %>
+                <article class="info-card">
+                    <div class="card-icon">
+                        <%= String(index + 1).padStart(2, '0') %>
+                    </div>
+                    <h3><%= category.name %></h3>
+                </article>
+            <% }) %>
 
         </div>
     </div>
