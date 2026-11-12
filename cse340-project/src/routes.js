@@ -2,9 +2,13 @@
 import express from "express";
 
 import { buildHome } from "./controllers/index.js";
-import { buildOrganizations } from "./controllers/organizations.js";
+import {
+    buildOrganizations,
+    showOrganizationDetailsPage
+} from "./controllers/organizations.js";
 import { buildProjects } from "./controllers/projects.js";
 import { buildCategories } from "./controllers/categories.js";
+
 import {
     triggerError,
     pageNotFound,
@@ -16,8 +20,9 @@ const router = express.Router();
 // Home route
 router.get("/", buildHome);
 
-// Organizations route
+// Organizations routes
 router.get("/organizations", buildOrganizations);
+router.get("/organization/:id", showOrganizationDetailsPage);
 
 // Projects route
 router.get("/projects", buildProjects);
