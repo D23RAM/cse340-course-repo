@@ -10,7 +10,10 @@ import {
     buildProjects,
     showProjectDetailsPage
 } from "./controllers/projects.js";
-import { buildCategories } from "./controllers/categories.js";
+import {
+    buildCategories,
+    showCategoryDetailsPage
+} from "./controllers/categories.js";
 
 import {
     triggerError,
@@ -31,9 +34,9 @@ router.get("/organization/:id", showOrganizationDetailsPage);
 router.get("/projects", buildProjects);
 router.get("/project/:id", showProjectDetailsPage);
 
-// Categories route
+// Categories routes
 router.get("/categories", buildCategories);
-
+router.get("/category/:id", showCategoryDetailsPage);
 // Test error route
 router.get("/test-error", triggerError);
 

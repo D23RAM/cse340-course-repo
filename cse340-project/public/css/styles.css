@@ -352,3 +352,63 @@ a:focus-visible {
     height: auto;
     margin-bottom: 30px;
 }
+
+
+
+
+
+/* Category tag colors */
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0 25px;
+}
+
+.category-tag {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Environment - Green */
+.category-tag[href="/category/1"] {
+    background-color: #DDF3E4;
+    color: #21643B;
+    border: 1px solid #A9D9B8;
+}
+
+/* Education - Blue */
+.category-tag[href="/category/2"] {
+    background-color: #DFEAFE;
+    color: #2455A4;
+    border: 1px solid #B6CCF4;
+}
+
+/* Community Development - Orange */
+.category-tag[href="/category/3"] {
+    background-color: #FCE8D5;
+    color: #99501B;
+    border: 1px solid #EFC69E;
+}
+
+/* Social Support - Purple */
+.category-tag[href="/category/4"] {
+    background-color: #F4DFF0;
+    color: #873C72;
+    border: 1px solid #E3B9D8;
+}
+
+.category-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.category-tag:focus-visible {
+    outline: 3px solid #222;
+    outline-offset: 3px;
+}
