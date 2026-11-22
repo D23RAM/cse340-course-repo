@@ -1,0 +1,46 @@
+<%- include("partials/header", { title: title }) %>
+
+<section class="page-hero">
+    <div class="container">
+        <p class="eyebrow">COMMUNITY CONNECT</p>
+        <h1>Edit Category</h1>
+        <p>Update the name of this service category.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="info-card">
+            <h2>Category Information</h2>
+
+            <form action="/edit-category/<%= category.category_id %>" method="POST">
+                <div class="form-group">
+                    <label for="name">Category Name</label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="<%= category.name || '' %>"
+                        required
+                        maxlength="100"
+                    >
+
+                    <% if (errors.name) { %>
+                        <p class="error-message">
+                            <%= errors.name %>
+                        </p>
+                    <% } %>
+                </div>
+
+                <button type="submit">Save Changes</button>
+            </form>
+
+            <p>
+                <a href="/categories">← Back to Categories</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+<%- include("partials/footer") %>

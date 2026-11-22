@@ -14,47 +14,76 @@
 
 <section class="section">
     <div class="container">
+
+        <% if (messages && messages.success && messages.success.length > 0) { %>
+            <div class="success-message">
+                <% messages.success.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+            </div>
+        <% } %>
+
         <p class="eyebrow">WORKING TOGETHER</p>
         <h2>Our Partner Organizations</h2>
         <p class="section-description">
-            Here are a few of our partner organizations:
+            Here are our partner organizations:
         </p>
 
+        <div class="section-heading">
+            <a href="/new-organization" class="btn">
+                + Create New Organization
+            </a>
+        </div>
+
         <div class="card-grid">
-            <% organizations.forEach(organization => { %>
-                <article class="info-card">
-                    <img
-                        src="/images/<%= organization.logo_filename %>"
-                        alt="<%= organization.name %> logo"
-                        class="organization-image"
-                    >
+            <% if (organizations && organizations.length > 0) { %>
+                <% organizations.forEach(organization => { %>
+                    <article class="info-card">
 
-                    <h3>
-                        <a href="/organization/<%= organization.organization_id %>">
-                            <%= organization.name %>
-                        </a>
-                    </h3>
+                        <img
+                            src="/images/<%= organization.logo_filename %>"
+                            alt="<%= organization.name %> logo"
+                            class="organization-image"
+                        >
 
-                    <p><%= organization.description %></p>
+                        <h3>
+                            <a href="/organization/<%= organization.organization_id %>">
+                                <%= organization.name %>
+                            </a>
+                        </h3>
 
-                    <a
-                        href="mailto:<%= organization.contact_email %>"
-                        class="text-link"
-                    >
-                        <%= organization.contact_email %>
-                    </a>
+                        <p><%= organization.description %></p>
 
-                    <p>
                         <a
-                            href="/organization/<%= organization.organization_id %>"
+                            href="mailto:<%= organization.contact_email %>"
                             class="text-link"
                         >
-                            View Organization Details &rarr;
+                            <%= organization.contact_email %>
                         </a>
-                    </p>
-                </article>
-            <% }); %>
+
+                        <p>
+                            <a
+                                href="/organization/<%= organization.organization_id %>"
+                                class="text-link"
+                            >
+                                View Organization Details &rarr;
+                            </a>
+                        </p>
+
+                        <a
+                            href="/edit-organization/<%= organization.organization_id %>"
+                            class="btn"
+                        >
+                            Edit Organization
+                        </a>
+
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <p>No organizations have been added yet.</p>
+            <% } %>
         </div>
+
     </div>
 </section>
 

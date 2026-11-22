@@ -31,9 +31,7 @@ const getProjectsByOrganizationId = async (organizationId) => {
         ORDER BY date;
     `;
 
-    const queryParams = [organizationId];
-    const result = await db.query(query, queryParams);
-
+    const result = await db.query(query, [organizationId]);
     return result.rows;
 };
 
@@ -56,9 +54,7 @@ const getUpcomingProjects = async (number_of_projects) => {
         LIMIT $1;
     `;
 
-    const queryParams = [number_of_projects];
-    const result = await db.query(query, queryParams);
-
+    const result = await db.query(query, [number_of_projects]);
     return result.rows;
 };
 
@@ -79,15 +75,86 @@ const getProjectDetails = async (id) => {
         WHERE service_project.project_id = $1;
     `;
 
-    const queryParams = [id];
-    const result = await db.query(query, queryParams);
+    const result = await db.query(query, [id]);
+    return result.rows[0] || null;
+};
+
+// Create a new service project
+const createProject = async (
+    organizationId,
+    title,
+    description,
+    location,
+    date
+) => {
+    const query = `
+        INSERT INTO service_project
+            (organization_id, title, description, location, date)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING
+            project_id,
+            organization_id,
+            title,
+            description,
+            location,
+            date;
+    `;
+
+    const result = await db.query(query, [
+        organizationId,
+        title,
+        description,
+        location,
+        date
+    ]);
 
     return result.rows[0];
+};
+
+// Update an existing service project
+const updateProject = async (
+    projectId,
+    organizationId,
+    title,
+    description,
+    location,
+    date
+) => {
+    const query = `
+        UPDATE service_project
+        SET
+            organization_id = $1,
+            title = $2,
+            description = $3,
+            location = $4,
+            date = $5
+        WHERE project_id = $6
+        RETURNING
+            project_id,
+            organization_id,
+            title,
+            description,
+            location,
+            date;
+    `;
+
+    const result = await db.query(query, [
+        organizationId,
+        title,
+        description,
+        location,
+        date,
+        projectId
+    ]);
+
+    return result.rows[0] || null;
 };
 
 export {
     getAllProjects,
     getProjectsByOrganizationId,
     getUpcomingProjects,
-    getProjectDetails
+    getProjectDetails,
+    createProject,
+    updateProject
 };

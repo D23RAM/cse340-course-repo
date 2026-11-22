@@ -1,0 +1,48 @@
+
+<%- include("partials/header", { title: title }) %>
+
+<section class="page-hero">
+    <div class="container">
+        <p class="eyebrow">PROJECT MANAGEMENT</p>
+        <h1>Assign Categories</h1>
+        <p>Select the categories that best describe this service project.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="info-card">
+            <h2><%= project.title %></h2>
+
+            <form action="/project/<%= project.project_id %>/categories" method="POST">
+                <fieldset>
+                    <legend>Available Categories</legend>
+
+                    <% if (allCategories.length > 0) { %>
+                        <% allCategories.forEach(category => { %>
+                            <div class="form-group">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="category_ids"
+                                        value="<%= category.category_id %>"
+                                        <%= assignedIds.includes(category.category_id) ? "checked" : "" %>
+                                    >
+                                    <%= category.name %>
+                                </label>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No categories are available. Create a category first.</p>
+                    <% } %>
+                </fieldset>
+
+                <button type="submit">Save Categories</button>
+            </form>
+
+            <p><a href="/project/<%= project.project_id %>">← Back to Project</a></p>
+        </div>
+    </div>
+</section>
+
+<%- include("partials/footer") %>

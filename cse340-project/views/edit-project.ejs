@@ -1,0 +1,111 @@
+
+<%- include("partials/header", { title: title }) %>
+
+<section class="page-hero">
+    <div class="container">
+        <p class="eyebrow">PROJECT MANAGEMENT</p>
+        <h1>Edit Service Project</h1>
+        <p>Update the details of this community service opportunity.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="info-card">
+
+            <form
+                action="/edit-project/<%= project.project_id %>"
+                method="POST"
+            >
+
+                <div class="form-group">
+                    <label for="title">Project Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="<%= project.title || '' %>"
+                        maxlength="150"
+                        required
+                    >
+                    <% if (errors.title) { %>
+                        <p class="error-message"><%= errors.title %></p>
+                    <% } %>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="5"
+                        required
+                    ><%= project.description || '' %></textarea>
+                    <% if (errors.description) { %>
+                        <p class="error-message"><%= errors.description %></p>
+                    <% } %>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        value="<%= project.location || '' %>"
+                        maxlength="255"
+                        required
+                    >
+                    <% if (errors.location) { %>
+                        <p class="error-message"><%= errors.location %></p>
+                    <% } %>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Project Date</label>
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value="<%= project.date || '' %>"
+                        required
+                    >
+                    <% if (errors.date) { %>
+                        <p class="error-message"><%= errors.date %></p>
+                    <% } %>
+                </div>
+
+                <div class="form-group">
+                    <label for="organization_id">Partner Organization</label>
+                    <select
+                        id="organization_id"
+                        name="organization_id"
+                        required
+                    >
+                        <option value="">Select an organization</option>
+
+                        <% organizations.forEach(organization => { %>
+                            <option
+                                value="<%= organization.organization_id %>"
+                                <%= String(project.organization_id) === String(organization.organization_id) ? "selected" : "" %>
+                            >
+                                <%= organization.name %>
+                            </option>
+                        <% }) %>
+                    </select>
+
+                    <% if (errors.organization_id) { %>
+                        <p class="error-message"><%= errors.organization_id %></p>
+                    <% } %>
+                </div>
+
+                <button type="submit" class="btn">Save Changes</button>
+                <a href="/projects">Cancel</a>
+
+            </form>
+
+        </div>
+    </div>
+</section>
+
+<%- include("partials/footer") %>

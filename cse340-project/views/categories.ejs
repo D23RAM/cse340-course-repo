@@ -1,5 +1,5 @@
 
-<%- include("partials/header", {title: title }) %>
+<%- include("partials/header", { title: title }) %>
 
 <section class="page-hero">
     <div class="container">
@@ -11,24 +11,45 @@
 
 <section class="section">
     <div class="container">
-        <div class="card-grid">
 
-            <% categories.forEach((category, index) => { %>
-                <article class="info-card">
-                    <div class="card-icon">
-                        <%= String(index + 1).padStart(2, '0') %>
-                    </div>
+        <% if (messages && messages.success && messages.success.length > 0) { %>
+            <div class="success-message">
+                <% messages.success.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+            </div>
+        <% } %>
 
-                    <h3>
-                        <a href="/category/<%= category.category_id %>">
-                            <%= category.name %>
-                        </a>
-                    </h3>
-                </article>
-            <% }) %>
-
+        <div class="section-heading">
+            <a href="/new-category" class="btn">+ Create New Category</a>
         </div>
+
+        <div class="card-grid">
+            <% if (categories && categories.length > 0) { %>
+                <% categories.forEach((category, index) => { %>
+                    <article class="info-card">
+                        <div class="card-icon">
+                            <%= String(index + 1).padStart(2, '0') %>
+                        </div>
+
+                        <h3>
+                            <a href="/category/<%= category.category_id %>">
+                                <%= category.name %>
+                            </a>
+                        </h3>
+
+                        <a href="/edit-category/<%= category.category_id %>" class="btn">
+                            Edit Category
+                        </a>
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <p>No categories have been added yet.</p>
+            <% } %>
+        </div>
+
     </div>
 </section>
 
 <%- include("partials/footer") %>
+

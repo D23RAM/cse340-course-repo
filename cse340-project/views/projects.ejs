@@ -1,5 +1,5 @@
 
-<%- include("partials/header", {title: title }) %>
+<%- include("partials/header", { title: title }) %>
 
 <section class="page-hero">
     <div class="container">
@@ -13,39 +13,73 @@
 
 <section class="section">
     <div class="container">
+
+        <% if (messages && messages.success && messages.success.length > 0) { %>
+            <div class="success-message">
+                <% messages.success.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+            </div>
+        <% } %>
+
         <p class="eyebrow">MAKE AN IMPACT</p>
         <h2>Upcoming Service Projects</h2>
 
-        <div class="card-grid">
-            <% projects.forEach(project => { %>
-                <article class="info-card">
-                    <h3>
-                        <a href="/project/<%= project.project_id %>">
-                            <%= project.title %>
-                        </a>
-                    </h3>
-
-                    <p>
-                        <strong>Organization:</strong>
-                        <a href="/organization/<%= project.organization_id %>">
-                            <%= project.organization_name %>
-                        </a>
-                    </p>
-
-                    <p><strong>Date:</strong>
-                        <%= new Date(project.date).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            timeZone: "UTC"
-                        }) %>
-                    </p>
-
-                    <p><%= project.description %></p>
-                    <p><strong>Location:</strong> <%= project.location %></p>
-                </article>
-            <% }); %>
+        <div class="section-heading">
+            <a href="/new-project" class="btn">
+                + Create New Project
+            </a>
         </div>
+
+        <div class="card-grid">
+            <% if (projects && projects.length > 0) { %>
+                <% projects.forEach(project => { %>
+                    <article class="info-card">
+
+                        <h3>
+                            <a href="/project/<%= project.project_id %>">
+                                <%= project.title %>
+                            </a>
+                        </h3>
+
+                        <p>
+                            <strong>Organization:</strong>
+                            <a href="/organization/<%= project.organization_id %>">
+                                <%= project.organization_name %>
+                            </a>
+                        </p>
+
+                        <p>
+                            <strong>Date:</strong>
+                            <%= new Date(project.date).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                timeZone: "UTC"
+                            }) %>
+                        </p>
+
+                        <p><%= project.description %></p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            <%= project.location %>
+                        </p>
+
+                        <a
+                            href="/edit-project/<%= project.project_id %>"
+                            class="btn"
+                        >
+                            Edit Project
+                        </a>
+
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <p>No upcoming service projects are currently available.</p>
+            <% } %>
+        </div>
+
     </div>
 </section>
 

@@ -59,7 +59,17 @@
                 <% } %>
             </div>
 
-            <a href="/projects">Back to Upcoming Projects</a>
+            <div class="project-actions">
+    <a href="/edit-project/<%= project.project_id %>" class="btn">
+        Edit Project
+    </a>
+
+    <a href="/project/<%= project.project_id %>/categories" class="btn">
+        Manage Categories
+    </a>
+
+    <a href="/projects">Back to Upcoming Projects</a>
+</div>
         </div>
     </div>
 </section>

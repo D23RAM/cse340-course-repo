@@ -10,7 +10,6 @@ const getAllCategories = async () => {
     `;
 
     const result = await db.query(query);
-
     return result.rows;
 };
 
@@ -23,16 +22,13 @@ const getCategoryById = async (id) => {
     `;
 
     const result = await db.query(query, [id]);
-
     return result.rows[0];
 };
 
 // Get all categories belonging to one service project
 const getCategoriesByProjectId = async (projectId) => {
     const query = `
-        SELECT
-            category.category_id,
-            category.name
+        SELECT category.category_id, category.name
         FROM category
         INNER JOIN project_category
             ON category.category_id = project_category.category_id
@@ -41,7 +37,6 @@ const getCategoriesByProjectId = async (projectId) => {
     `;
 
     const result = await db.query(query, [projectId]);
-
     return result.rows;
 };
 
@@ -66,13 +61,63 @@ const getProjectsByCategoryId = async (categoryId) => {
     `;
 
     const result = await db.query(query, [categoryId]);
-
     return result.rows;
+};
+
+// Create a new category
+const createCategory = async (name) => {
+    const query = `
+        INSERT INTO public.category (name)
+        VALUES ($1)
+        RETURNING category_id, name;
+    `;
+
+    const result = await db.query(query, [name]);
+    return result.rows[0];
+};
+
+// Update an existing category
+const updateCategory = async (id, name) => {
+    const query = `
+        UPDATE public.category
+        SET name = $1
+        WHERE category_id = $2
+        RETURNING category_id, name;
+    `;
+
+    const result = await db.query(query, [name, id]);
+    return result.rows[0];
+};
+
+// Update the categories assigned to a service project
+const updateProjectCategories = async (projectId, categoryIds) => {
+    // First, remove the existing category assignments
+    const deleteQuery = `
+        DELETE FROM project_category
+        WHERE project_id = $1;
+    `;
+
+    await db.query(deleteQuery, [projectId]);
+
+    // Then, insert the newly selected categories
+    if (categoryIds.length > 0) {
+        const insertQuery = `
+            INSERT INTO project_category (project_id, category_id)
+            SELECT $1, selected.category_id
+            FROM unnest($2::integer[]) AS selected(category_id)
+            ON CONFLICT DO NOTHING;
+        `;
+
+        await db.query(insertQuery, [projectId, categoryIds]);
+    }
 };
 
 export {
     getAllCategories,
     getCategoryById,
     getCategoriesByProjectId,
-    getProjectsByCategoryId
+    getProjectsByCategoryId,
+    createCategory,
+    updateCategory,
+    updateProjectCategories
 };
