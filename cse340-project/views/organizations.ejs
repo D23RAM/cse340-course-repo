@@ -37,13 +37,15 @@
 
         <div class="card-grid">
             <% if (organizations && organizations.length > 0) { %>
+
                 <% organizations.forEach(organization => { %>
                     <article class="info-card">
 
                         <img
-                            src="/images/<%= organization.logo_filename %>"
+                            src="/images/<%= organization.logo_filename || 'community.svg' %>"
                             alt="<%= organization.name %> logo"
                             class="organization-image"
+                            onerror="this.onerror=null; this.src='/images/community.svg';"
                         >
 
                         <h3>
@@ -79,6 +81,7 @@
 
                     </article>
                 <% }) %>
+
             <% } else { %>
                 <p>No organizations have been added yet.</p>
             <% } %>

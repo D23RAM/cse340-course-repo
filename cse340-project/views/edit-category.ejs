@@ -1,3 +1,4 @@
+
 <%- include("partials/header", { title: title }) %>
 
 <section class="page-hero">
@@ -13,7 +14,22 @@
         <div class="info-card">
             <h2>Category Information</h2>
 
-            <form action="/edit-category/<%= category.category_id %>" method="POST">
+            <% if (messages && messages.error && messages.error.length > 0) { %>
+                <div class="error-message" role="alert">
+                    <strong>Please correct the following errors:</strong>
+                    <ul>
+                        <% messages.error.forEach(message => { %>
+                            <li><%= message %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <form
+                action="/edit-category/<%= category.category_id %>"
+                method="POST"
+                novalidate
+            >
                 <div class="form-group">
                     <label for="name">Category Name</label>
 
@@ -23,17 +39,12 @@
                         name="name"
                         value="<%= category.name || '' %>"
                         required
+                        minlength="3"
                         maxlength="100"
                     >
-
-                    <% if (errors.name) { %>
-                        <p class="error-message">
-                            <%= errors.name %>
-                        </p>
-                    <% } %>
                 </div>
 
-                <button type="submit">Save Changes</button>
+                <button type="submit" class="btn">Save Changes</button>
             </form>
 
             <p>

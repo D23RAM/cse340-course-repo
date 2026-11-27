@@ -57,6 +57,8 @@ const showProjectDetailsPage = async (req, res, next) => {
 };
 
 // Display the category assignment form
+
+// Display the category assignment form
 const buildProjectCategories = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -71,9 +73,23 @@ const buildProjectCategories = async (req, res, next) => {
         const allCategories = await getAllCategories();
         const assignedCategories = await getCategoriesByProjectId(id);
 
-        const assignedIds = assignedCategories.map(category =>
-            category.category_id
-        );
+        const oldInput = res.locals.messages?.oldInput?.[0];
+
+        let assignedIds;
+
+        if (oldInput) {
+            const submittedIds = oldInput.category_ids;
+
+            assignedIds = submittedIds === undefined
+                ? []
+                : Array.isArray(submittedIds)
+                    ? submittedIds.map(Number)
+                    : [Number(submittedIds)];
+        } else {
+            assignedIds = assignedCategories.map(category =>
+                Number(category.category_id)
+            );
+        }
 
         res.render("project-categories", {
             title: "Assign Project Categories",
@@ -110,6 +126,8 @@ const updateProjectCategoriesController = async (req, res, next) => {
 
         await updateProjectCategories(id, categoryIds);
 
+        req.flash("success", "Project categories updated successfully.");
+
         return res.redirect(`/project/${id}`);
     } catch (error) {
         next(error);
@@ -120,84 +138,35 @@ const updateProjectCategoriesController = async (req, res, next) => {
 const buildNewProject = async (req, res, next) => {
     try {
         const organizations = await getAllOrganizations();
+        const oldInput = res.locals.messages?.oldInput?.[0];
 
         res.render("new-project", {
             title: "Create New Service Project",
-            project: {},
-            organizations,
-            errors: {}
+            project: oldInput || {},
+            organizations
         });
     } catch (error) {
         next(error);
     }
 };
 
-// Validate project form data
-const validateProject = (project, organizations) => {
-    const errors = {};
-
-    if (!project.title || !project.title.trim()) {
-        errors.title = "Project title is required.";
-    } else if (project.title.trim().length > 150) {
-        errors.title = "Project title cannot exceed 150 characters.";
-    }
-
-    if (!project.description || !project.description.trim()) {
-        errors.description = "Project description is required.";
-    }
-
-    if (!project.location || !project.location.trim()) {
-        errors.location = "Project location is required.";
-    } else if (project.location.trim().length > 255) {
-        errors.location = "Project location cannot exceed 255 characters.";
-    }
-
-    if (!project.date || !/^\d{4}-\d{2}-\d{2}$/.test(project.date)) {
-        errors.date = "Enter a valid project date.";
-    } else {
-        const parsedDate = new Date(`${project.date}T00:00:00Z`);
-        if (
-            Number.isNaN(parsedDate.getTime()) ||
-            parsedDate.toISOString().slice(0, 10) !== project.date
-        ) {
-            errors.date = "Enter a valid project date.";
-        }
-    }
-
-    const organizationId = Number(project.organization_id);
-
-    if (
-        !project.organization_id ||
-        !Number.isInteger(organizationId) ||
-        !organizations.some(org => org.organization_id === organizationId)
-    ) {
-        errors.organization_id = "Select a valid organization.";
-    }
-
-    return errors;
-};
-
 // Process the new project form
 const createNewProject = async (req, res, next) => {
     try {
-        const organizations = await getAllOrganizations();
-        const errors = validateProject(req.body, organizations);
-
-        if (Object.keys(errors).length > 0) {
-            return res.status(400).render("new-project", {
-                title: "Create New Service Project",
-                project: req.body,
-                organizations,
-                errors
-            });
-        }
+        const {
+            title,
+            description,
+            location,
+            date,
+            organization_id
+        } = req.body;
 
         await createProject(
-            Number(req.body.organization_id),
-            req.body.title.trim(),
-            req.body.description.trim(),
-            req.body.location.trim(),
-            req.body.date
+            Number(organization_id),
+            title.trim(),
+            description.trim(),
+            location.trim(),
+            date
         );
 
         req.flash("success", "Service project created successfully.");
@@ -226,17 +195,21 @@ const buildEditProject = async (req, res, next) => {
         }
 
         const organizations = await getAllOrganizations();
+        const oldInput = res.locals.messages?.oldInput?.[0];
 
         const formattedProject = {
             ...project,
             date: new Date(project.date).toISOString().slice(0, 10)
         };
 
+        const formProject = oldInput
+            ? { ...formattedProject, ...oldInput }
+            : formattedProject;
+
         res.render("edit-project", {
             title: "Edit Service Project",
-            project: formattedProject,
-            organizations,
-            errors: {}
+            project: formProject,
+            organizations
         });
     } catch (error) {
         next(error);
@@ -260,28 +233,21 @@ const updateProjectDetails = async (req, res, next) => {
             });
         }
 
-        const organizations = await getAllOrganizations();
-        const errors = validateProject(req.body, organizations);
-
-        if (Object.keys(errors).length > 0) {
-            return res.status(400).render("edit-project", {
-                title: "Edit Service Project",
-                project: {
-                    project_id: id,
-                    ...req.body
-                },
-                organizations,
-                errors
-            });
-        }
+        const {
+            title,
+            description,
+            location,
+            date,
+            organization_id
+        } = req.body;
 
         await updateProject(
             id,
-            Number(req.body.organization_id),
-            req.body.title.trim(),
-            req.body.description.trim(),
-            req.body.location.trim(),
-            req.body.date
+            Number(organization_id),
+            title.trim(),
+            description.trim(),
+            location.trim(),
+            date
         );
 
         req.flash("success", "Service project updated successfully.");

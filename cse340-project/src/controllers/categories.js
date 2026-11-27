@@ -47,10 +47,11 @@ const showCategoryDetailsPage = async (req, res, next) => {
 
 // Display the new category form
 const buildNewCategory = (req, res) => {
+    const oldInput = res.locals.messages?.oldInput?.[0];
+
     res.render("new-category", {
         title: "Create New Category",
-        errors: {},
-        category: {}
+        category: oldInput || {}
     });
 };
 
@@ -58,23 +59,6 @@ const buildNewCategory = (req, res) => {
 const createNewCategory = async (req, res, next) => {
     try {
         const { name } = req.body;
-        const errors = {};
-
-        if (!name || !name.trim()) {
-            errors.name = "Category name is required.";
-        } else if (name.trim().length < 3) {
-            errors.name = "Category name must be at least 3 characters.";
-        } else if (name.trim().length > 100) {
-            errors.name = "Category name cannot exceed 100 characters.";
-        }
-
-        if (Object.keys(errors).length > 0) {
-            return res.status(400).render("new-category", {
-                title: "Create New Category",
-                errors,
-                category: { name }
-            });
-        }
 
         await createCategory(name.trim());
 
@@ -83,15 +67,10 @@ const createNewCategory = async (req, res, next) => {
         return res.redirect("/categories");
     } catch (error) {
         if (error.code === "23505") {
-            return res.status(400).render("new-category", {
-                title: "Create New Category",
-                errors: {
-                    name: "A category with this name already exists."
-                },
-                category: {
-                    name: req.body.name
-                }
-            });
+            req.flash("error", "A category with this name already exists.");
+            req.flash("oldInput", req.body);
+
+            return res.redirect("/new-category");
         }
 
         next(error);
@@ -110,10 +89,15 @@ const buildEditCategory = async (req, res, next) => {
             });
         }
 
+        const oldInput = res.locals.messages?.oldInput?.[0];
+
+        const formCategory = oldInput
+            ? { ...category, ...oldInput }
+            : category;
+
         res.render("edit-category", {
             title: "Edit Category",
-            category,
-            errors: {}
+            category: formCategory
         });
     } catch (error) {
         next(error);
@@ -125,23 +109,6 @@ const updateCategoryDetails = async (req, res, next) => {
     try {
         const id = req.params.id;
         const { name } = req.body;
-        const errors = {};
-
-        if (!name || !name.trim()) {
-            errors.name = "Category name is required.";
-        } else if (name.trim().length < 3) {
-            errors.name = "Category name must be at least 3 characters.";
-        } else if (name.trim().length > 100) {
-            errors.name = "Category name cannot exceed 100 characters.";
-        }
-
-        if (Object.keys(errors).length > 0) {
-            return res.status(400).render("edit-category", {
-                title: "Edit Category",
-                category: { category_id: id, name },
-                errors
-            });
-        }
 
         const updatedCategory = await updateCategory(id, name.trim());
 
@@ -156,16 +123,10 @@ const updateCategoryDetails = async (req, res, next) => {
         return res.redirect("/categories");
     } catch (error) {
         if (error.code === "23505") {
-            return res.status(400).render("edit-category", {
-                title: "Edit Category",
-                category: {
-                    category_id: req.params.id,
-                    name: req.body.name
-                },
-                errors: {
-                    name: "A category with this name already exists."
-                }
-            });
+            req.flash("error", "A category with this name already exists.");
+            req.flash("oldInput", req.body);
+
+            return res.redirect(`/edit-category/${req.params.id}`);
         }
 
         next(error);

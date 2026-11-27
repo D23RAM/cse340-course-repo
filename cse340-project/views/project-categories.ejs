@@ -14,7 +14,21 @@
         <div class="info-card">
             <h2><%= project.title %></h2>
 
-            <form action="/project/<%= project.project_id %>/categories" method="POST">
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="error-message" role="alert">
+                    <ul>
+                        <% messages.error.forEach(error => { %>
+                            <li><%= error %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <form
+                action="/project/<%= project.project_id %>/categories"
+                method="POST"
+                novalidate
+            >
                 <fieldset>
                     <legend>Available Categories</legend>
 
@@ -26,7 +40,7 @@
                                         type="checkbox"
                                         name="category_ids"
                                         value="<%= category.category_id %>"
-                                        <%= assignedIds.includes(category.category_id) ? "checked" : "" %>
+                                        <%= assignedIds.includes(Number(category.category_id)) ? "checked" : "" %>
                                     >
                                     <%= category.name %>
                                 </label>
@@ -40,7 +54,11 @@
                 <button type="submit">Save Categories</button>
             </form>
 
-            <p><a href="/project/<%= project.project_id %>">← Back to Project</a></p>
+            <p>
+                <a href="/project/<%= project.project_id %>">
+                    ← Back to Project
+                </a>
+            </p>
         </div>
     </div>
 </section>
